@@ -4,7 +4,7 @@ import os
 import shutil
 import sys
 
-def chec_reboot():
+def check_reboot():
     """return true if the computer has a pending reeboot"""
     return os.path.exists("/run/reboot-required")
 
@@ -23,12 +23,12 @@ def check_root_full():
     """Returns True is the root patition is full ,false otherwise"""
     return check_disk_full(disk="/",min_gb=2,min_percent=10)
 def main():
-    if chec_reboot:
-        print ("pending Reboot")
-        sys.exit(1)
-    if check_disk_full():
-        print("disk full")
-        sys.exit(1)
+    checks=[(check_reboot,"pending reboot"),(check_root_full,"root partition full")]
+    for check ,msg in checks:
+        if check():
+            print(msg)
+            sys.exit(1)
+
     print("everyting is ok")
     sys.exit(0)
 
